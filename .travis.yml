@@ -1,0 +1,42 @@
+language: android
+android:
+  components:
+  - tools
+  - platform-tools
+  - android-23
+  - build-tools-23.0.2
+  - extra
+jdk: oraclejdk7
+notifications:
+  email: false
+before_install:
+- touch local.properties
+- source gradle.properties
+- openssl aes-256-cbc -K $encrypted_1a422085d38a_key -iv $encrypted_1a422085d38a_iv
+  -in release.jks.enc -out release.jks -d
+script:
+- ./gradlew clean assembleDebug
+- cp app/build/outputs/apk/EasyLog-v$VERSION_NAME-debug.apk $HOME
+- cp plugin/build/outputs/apk/EasyLog-plugin-v$PLUGIN_VERSION_NAME-debug.apk $HOME
+- ./gradlew clean assembleRelease
+- cp app/build/outputs/apk/EasyLog-v$VERSION_NAME-release.apk $HOME
+- cp plugin/build/outputs/apk/EasyLog-plugin-v$PLUGIN_VERSION_NAME-release.apk $HOME
+- md5sum "$HOME/EasyLog-v$VERSION_NAME-debug.apk"
+- md5sum "$HOME/EasyLog-v$VERSION_NAME-release.apk"
+- sha1sum "$HOME/EasyLog-v$VERSION_NAME-debug.apk"
+- sha1sum "$HOME/EasyLog-v$VERSION_NAME-release.apk"
+deploy:
+  provider: releases
+  api-key: $GITHUB_TOKEN
+  file:
+  - $HOME/EasyLog-v$VERSION_NAME-debug.apk
+  - $HOME/EasyLog-v$VERSION_NAME-release.apk
+  skip_cleanup: true
+  on:
+    tags: true
+env:
+  global:
+  - secure: WYAVwCNkkHkWmvMydm879RH022lLHOcGcY9aTtP0VXVoU21kO68uguGC7IUxIn8KkJxbQk07lU33hndQvseWI4EE9gCNbmWTPO0LMIvmjlCtytN4t59xF1IypdK2zcQeMCMYRcaBqP9A4OLXkxlMNDJpwUSWQl0LvAMAFicgZgOop4coKcAzG6eVIbIfYX7Lkdx6PzUhfIrGh+KS5OUIt5oEJB4IV5xMkHUYy611qqHj1JulpSumIYYBI77Kqh+i3A8l63ES+RuLJvEmm507kQkmt2N5JhIdmay+AZHXgnhi5T9vOkV9vNV/Vk2ehxpnov/mq5cxJ+ftkkGDlwSdXmPc4BzP+shSWCptJhxRVRk856Iw1WDg+AsR8T0Z7pJ4x2oDRaGfxiren//uGaRyCeGGxbaGGSSdHxLauDAX7hHrfq0It/nClVn61sFJXT9szi9lyqUdberJyoNZLqH/hhVgecE0sQyHD8PwKFc986xXY4AembjfGtEt0dfLKaMOFMg5S80cjdJlqytJa4Jf6O3W4BTOGta20LLKrlrXbJaDotjRKF6J2a6khM84XTUCuYBCbppYCqq3ttFVLxRaZlCaZFuoKDJZXAO/0MrrR6qsn28zfyP+sICYSssjnm/8CmTDZTKjDGMvhV89K7W0o4J/8T1lGWrbG6MZiejAxgA=
+  - secure: W9843P9Ix8AJHgK/TO5UIWTGNS3MojKjXuNjztV0SYyLAQraCXhvjtORYfnzR2pb5bDms4aJWG0mpvCVFjU+tbb9vyrjmR55sATP6lyBMc0bZam+vnHwuDzrnowuyoD6EcHJvPzSJOhuKnew5/btOGf6O0HzKKw/jbrmjOtNcaNmzJnxLvmEqgvDT7xnAzpGx9rifmbmkEWtkJOts02K+wnD8N6Hxu/37sbjgYI465/AMoRlk+HIl9MuZSD8Q9bfTO31rBpNJIEp2rC5vFZU1ekpWqoHoG3dEBv1q8Ufv8bNnhugeSjdegYGtwXSCQA3f8tmE9Tisd+dITQujhpgiayj63mU0rfLFS/JnEJ7uyaHF+1QonAY/kLg3iEoicMs6Wa/OXh0kcYqdncjrRSXpS6dIMro3oSp734rOiQPXSIZhAn+HUk1EsASdgUnVmMa5zQ49ttwmBrFPU9udyTGaRsqLDfC1iE5zZPMSlZYHyx74aWuL4pDmiXJhUgH1UIduFQNDrA0sqHnfEBe8ZmWEwth7HMVVhGkWyqyO/4GvBpCzsPapxxKz4iWY0ePPSh50h/t7ED/erMl4YBYlgBQ8op93ErGQkyA0XWjpmqfdKXXew4/ZiY21bUbnW2NG90mY2J7fWOPUztu+GsuX8TwBoSz18ld7h5wJSLnjNQi1kU=
+  - secure: rRXOAvegxLMPY9YxQemZBsbDzVvzm+r584FEVsSQTwOoquYCpuGrhBjYGAPyecoy+yEc/1wZRdRXGScCfEzAnjJE7kjThdChFiytaHEDTyBOoq9VwNgYLZvfwSb4a2hAHTcaZ/vOJhXDJbMs2Up8MqYi0sA4kDig8nwTr9imRKfiHeGmqTj5gnRqsX7u4aBBXSdL4i0mnFr4ZmhcGAXUBgRWhnC21NXdQRYjUqth4qC7rCy8ZTXX62Dps1dfK9FaFL0hXwAaffyJZsaJhmfvWeO4YtecN6RSVGHLGUroUc5rg9rwRyYkHOp+sxA3c0jwpylaeoXWaqwRCwP68oTzC5qDlIuE1vwGMmo3fpmA5E6YzrvwzkHZe9edrQqX//pDz54CWHQwd0Jog1u1UkKB5IzA986b3hVC/H15ryPYYyb49JEu+XJGbZhwjk3i5I9ummcEe0JgRNPeexn7FjxVmTXrGW9yjrSrrWB3HTUDbN08ITS9DSc1aCZXacl9Dqs8Ec8kV1tI81l3eh9S6y7j4EdWkkg8lj7iEKrQpzuXL4qG+nkWq5tNn56MdMTonop7PRvA++Rh9gtgw51qWTT/pNjUg0gtZVuWGgIAm6WLv8dzlS17xTRMu5R9S5yQFp8y09jwqpNbhVVb5zNztobAavbA8Z0RsGTislQCci8qON8=
+  - secure: XSjzLiRDrmdAHnUvL+mZCqENzLzk91W6uFuVh6ZRyjJFlaijQcsbqeCr+2u8ex2le/G6ffUglcMifSfIx3qfXfm8BJ9Kgn5dWmF3cBzX3v+V+s5qbOkroNZEZSy4HhbAcIehFWKBhzPSKK5IRT6cvYZsPMiry5zFvTgsKkd4aNunWlIWfQpGvKRx0AUEh4mDTSrjUAkNZFPr7OHqsYgQIDlA2zfzDGolC6KkK5KmPrc1dtlv5LolDDO/1nGIigC40WNunfgRHxr6LgpBorqbo67HfaPwLU7+TbEls3yy3RgxnLjS+CEYX2cwYEgDyts41ipiUpUzINkempNWVMIv0uSb3SwRUoDMKtIZxMxlQW6OUftpjc8nfJd6Bhc+bR7OXWxDI5HYStOJ6NCGbs1EzSYoF+V5FGHDaV/ZSe5maqyYnvQEmvgwkuXemJmplvK+SdAOC7nFhd7bOh4DJP6AbK59BITjZoVgkzHT5k+2SKS5unAQ9j/EWncrCsEQ0WwmsfFE/s8xmIqV0VJ6DeCOE+99Mn9O0/SqKfcwJUQGMBXjW9uptybqrWVr42Cd5kK6YuVTBbPhgo8WOeJquqMUpkEeE2A25dqRN0JOZI/nmBMma0iFQbts3Cyl6PdFD9bcWg1vRXFeSPIGGifZUDrdarGXiIh2QpjVrx2FarZx28U=

@@ -8,13 +8,27 @@ android {
         applicationId "org.xdty.easylog"
         minSdkVersion 14
         targetSdkVersion 23
-        versionCode 1
-        versionName "1.0"
+        versionCode project.VERSION_CODE.toInteger()
+        versionName project.VERSION_NAME
+        setProperty("archivesBaseName", "EasyLog-v$versionName")
     }
+
+    signingConfigs {
+        release
+    }
+
     buildTypes {
-        release {
-            minifyEnabled false
+        debug {
+            minifyEnabled true
+            shrinkResources true
             proguardFiles getDefaultProguardFile('proguard-android.txt'), 'proguard-rules.pro'
+            signingConfig signingConfigs.release
+        }
+        release {
+            minifyEnabled true
+            shrinkResources true
+            proguardFiles getDefaultProguardFile('proguard-android.txt'), 'proguard-rules.pro'
+            signingConfig signingConfigs.release
         }
     }
 }
@@ -24,3 +38,5 @@ dependencies {
     testCompile 'junit:junit:4.12'
     compile 'com.android.support:appcompat-v7:23.2.0'
 }
+
+apply from: '../signing.gradle'
