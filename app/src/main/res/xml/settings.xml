@@ -1,0 +1,17 @@
+<?xml version="1.0" encoding="utf-8"?>
+<PreferenceScreen xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/apk/res-auto">
+    <com.jenzz.materialpreference.SwitchPreference
+        android:defaultValue="false"
+        android:key="@string/enable_window_key"
+        android:title="@string/enable_window">
+    </com.jenzz.materialpreference.SwitchPreference>
+
+    <com.jenzz.materialpreference.PreferenceCategory
+        android:title="@string/filter">
+        <com.jenzz.materialpreference.Preference
+            android:key="@string/filter_tag_key"
+            android:title="@string/filter_tag">
+        </com.jenzz.materialpreference.Preference>
+    </com.jenzz.materialpreference.PreferenceCategory>
+</PreferenceScreen>

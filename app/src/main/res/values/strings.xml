@@ -1,3 +1,8 @@
 <resources>
     <string name="app_name">EasyLog</string>
+    <string name="enable_window_key">enable_window_key</string>
+    <string name="enable_window">Enable window</string>
+    <string name="filter">Filter</string>
+    <string name="filter_tag_key">filter_tag_key</string>
+    <string name="filter_tag">Fliter tag</string>
 </resources>
