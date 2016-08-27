@@ -1,23 +1,22 @@
 package org.xdty.easylog;
 
+import android.content.Context;
+
 public class EasyLog {
 
     private static LogReader sLogReader = LogReader.getInstance();
-    private static LogReader.LogListener sLogListener;
+    private static LogListener sLogListener;
 
-    public static void enable() {
+    public static void start(Context context) {
         sLogReader.restart();
-        sLogListener = new LogReader.LogListener() {
-            @Override
-            public void onReadLine(String line) {
-
-            }
-        };
+        sLogListener = new LogListener();
         sLogReader.addListener(sLogListener);
+        sLogListener.bind(context);
     }
 
-    public static void disable() {
+    public static void stop(Context context) {
         sLogReader.stop();
         sLogReader.removeListener(sLogListener);
+        sLogListener.clear(context);
     }
 }
