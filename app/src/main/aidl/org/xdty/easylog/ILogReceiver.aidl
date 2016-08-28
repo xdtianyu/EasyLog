@@ -1,5 +1,7 @@
 package org.xdty.easylog;
 
+import org.xdty.easylog.LogLine;
+
 interface ILogReceiver {
-    void log(String line);
+    void log(in LogLine line);
 }

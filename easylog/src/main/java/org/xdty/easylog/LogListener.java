@@ -35,7 +35,7 @@ public class LogListener implements LogReader.LogListener {
     public void onReadLine(String line) {
         if (mLogReceiver != null) {
             try {
-                mLogReceiver.log(line);
+                mLogReceiver.log(new LogLine(line));
             } catch (RemoteException e) {
                 e.printStackTrace();
             }

@@ -31,19 +31,26 @@ public class EasyLogService extends Service {
 
     private boolean isWindowShowing = false;
 
+    private LogPool mLogPool;
+
     private IBinder mBinder = new ILogReceiver.Stub() {
 
         @Override
-        public void log(final String line) throws RemoteException {
-            Log.e(TAG, line);
+        public void log(final LogLine line) throws RemoteException {
+            Log.e(TAG, line.content);
             mMainHandler.post(new Runnable() {
                 @Override
                 public void run() {
-                    mTextView.append("\n" + line);
+                    handleLog(line);
                 }
             });
         }
     };
+
+    private void handleLog(LogLine line) {
+        mLogPool.append(line);
+        mTextView.setText(mLogPool.cache());
+    }
 
     @Override
     public int onStartCommand(Intent intent, int flags, int startId) {
@@ -72,6 +79,8 @@ public class EasyLogService extends Service {
         mSetting = new SettingImpl(this);
 
         mMainHandler = new Handler(Looper.getMainLooper());
+
+        mLogPool = new LogPool(50);
 
         mWindow = View.inflate(this, R.layout.window, null);
         mTextView = (TextView) mWindow.findViewById(R.id.text);
