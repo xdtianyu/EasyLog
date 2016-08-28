@@ -5,4 +5,5 @@
     <string name="filter">Filter</string>
     <string name="filter_tag_key">filter_tag_key</string>
     <string name="filter_tag">Fliter tag</string>
+    <string name="transparent_key">transparent_key</string>
 </resources>

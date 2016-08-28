@@ -2,6 +2,7 @@ package org.xdty.easylog;
 
 import android.app.Service;
 import android.content.Intent;
+import android.graphics.Color;
 import android.graphics.PixelFormat;
 import android.os.Handler;
 import android.os.IBinder;
@@ -22,6 +23,7 @@ public class EasyLogService extends Service {
     private View mWindow;
     private TextView mTextView;
     private WindowManager mWindowManager;
+    private Setting mSetting;
 
     private Handler mMainHandler;
 
@@ -43,6 +45,8 @@ public class EasyLogService extends Service {
     public void onCreate() {
         super.onCreate();
 
+        mSetting = new SettingImpl(this);
+
         mMainHandler = new Handler(Looper.getMainLooper());
 
         mWindow = View.inflate(this, R.layout.window, null);
@@ -61,13 +65,20 @@ public class EasyLogService extends Service {
         params.gravity = Gravity.CENTER;
 
         mWindowManager = (WindowManager) getSystemService(WINDOW_SERVICE);
-        mWindowManager.addView(mWindow, params);
+
+        if (mSetting.isWindowEnabled()) {
+            int alpha = mSetting.getWindowAlpha();
+            mTextView.setTextColor(Color.argb(alpha, 255, 0, 0));
+            mWindowManager.addView(mWindow, params);
+        }
 
     }
 
     @Override
     public void onDestroy() {
-        mWindowManager.removeView(mWindow);
+        if (mSetting.isWindowEnabled()) {
+            mWindowManager.removeView(mWindow);
+        }
         super.onDestroy();
     }
 
