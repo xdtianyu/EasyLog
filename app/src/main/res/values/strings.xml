@@ -6,4 +6,8 @@
     <string name="filter_tag_key">filter_tag_key</string>
     <string name="filter_tag">Fliter tag</string>
     <string name="transparent_key">transparent_key</string>
+    <string name="transparent">Transparent</string>
+    <string name="ok">OK</string>
+    <string name="cancel">Cancel</string>
+    <string name="text_transparent">Drag to change transparency.</string>
 </resources>

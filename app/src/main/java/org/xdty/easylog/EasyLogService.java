@@ -2,8 +2,8 @@ package org.xdty.easylog;
 
 import android.app.Service;
 import android.content.Intent;
-import android.graphics.Color;
 import android.graphics.PixelFormat;
+import android.os.Bundle;
 import android.os.Handler;
 import android.os.IBinder;
 import android.os.Looper;
@@ -18,14 +18,18 @@ import android.widget.TextView;
 
 public class EasyLogService extends Service {
 
+    public final static String WINDOW_TRANS = "window_trans";
+    public final static String ENABLE_WINDOW = "enable_window";
     private static final String TAG = EasyLogService.class.getSimpleName();
 
     private View mWindow;
     private TextView mTextView;
     private WindowManager mWindowManager;
+    private WindowManager.LayoutParams mParams;
     private Setting mSetting;
-
     private Handler mMainHandler;
+
+    private boolean isWindowShowing = false;
 
     private IBinder mBinder = new ILogReceiver.Stub() {
 
@@ -42,6 +46,26 @@ public class EasyLogService extends Service {
     };
 
     @Override
+    public int onStartCommand(Intent intent, int flags, int startId) {
+
+        Bundle bundle = intent.getExtras();
+        if (bundle != null) {
+            int alpha = bundle.getInt(WINDOW_TRANS);
+            if (alpha != 0) {
+                mWindow.setAlpha(alpha / 100f);
+            }
+
+            if (mSetting.isWindowEnabled()) {
+                enableWindow();
+            } else {
+                disableWindow();
+            }
+        }
+
+        return START_NOT_STICKY;
+    }
+
+    @Override
     public void onCreate() {
         super.onCreate();
 
@@ -53,7 +77,7 @@ public class EasyLogService extends Service {
         mTextView = (TextView) mWindow.findViewById(R.id.text);
         mTextView.setMovementMethod(new ScrollingMovementMethod());
 
-        WindowManager.LayoutParams params = new WindowManager.LayoutParams(
+        mParams = new WindowManager.LayoutParams(
                 WindowManager.LayoutParams.MATCH_PARENT,
                 WindowManager.LayoutParams.MATCH_PARENT,
                 0, 0,
@@ -62,23 +86,32 @@ public class EasyLogService extends Service {
                         | WindowManager.LayoutParams.FLAG_NOT_TOUCHABLE,
                 PixelFormat.TRANSLUCENT);
 
-        params.gravity = Gravity.CENTER;
+        mParams.gravity = Gravity.CENTER;
 
         mWindowManager = (WindowManager) getSystemService(WINDOW_SERVICE);
+        enableWindow();
 
-        if (mSetting.isWindowEnabled()) {
+    }
+
+    private void enableWindow() {
+        if (!isWindowShowing) {
             int alpha = mSetting.getWindowAlpha();
-            mTextView.setTextColor(Color.argb(alpha, 255, 0, 0));
-            mWindowManager.addView(mWindow, params);
+            mWindow.setAlpha(alpha / 100f);
+            mWindowManager.addView(mWindow, mParams);
+            isWindowShowing = true;
         }
+    }
 
+    private void disableWindow() {
+        if (isWindowShowing) {
+            mWindowManager.removeView(mWindow);
+            isWindowShowing = false;
+        }
     }
 
     @Override
     public void onDestroy() {
-        if (mSetting.isWindowEnabled()) {
-            mWindowManager.removeView(mWindow);
-        }
+        disableWindow();
         super.onDestroy();
     }
 

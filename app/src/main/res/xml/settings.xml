@@ -7,6 +7,11 @@
         android:title="@string/enable_window">
     </com.jenzz.materialpreference.SwitchPreference>
 
+    <com.jenzz.materialpreference.Preference
+        android:key="@string/transparent_key"
+        android:title="@string/transparent">
+    </com.jenzz.materialpreference.Preference>
+
     <com.jenzz.materialpreference.PreferenceCategory
         android:title="@string/filter">
         <com.jenzz.materialpreference.Preference
