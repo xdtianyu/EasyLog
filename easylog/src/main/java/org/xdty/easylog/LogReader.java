@@ -4,7 +4,6 @@ import android.os.Handler;
 import android.os.HandlerThread;
 import android.os.Looper;
 import android.text.TextUtils;
-import android.util.Log;
 
 import java.io.BufferedReader;
 import java.io.IOException;
@@ -139,7 +138,7 @@ public final class LogReader {
                     handleLog(line);
                 }
             } catch (IOException ex) {
-                Log.e(TAG, "getLog failed", ex);
+                // do noting
             }
         }
     }

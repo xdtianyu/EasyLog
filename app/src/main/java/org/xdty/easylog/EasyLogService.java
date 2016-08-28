@@ -21,7 +21,6 @@ public class EasyLogService extends Service {
 
     private View mWindow;
     private TextView mTextView;
-    private WindowManager.LayoutParams mParams;
     private WindowManager mWindowManager;
 
     private Handler mMainHandler;
@@ -50,27 +49,26 @@ public class EasyLogService extends Service {
         mTextView = (TextView) mWindow.findViewById(R.id.text);
         mTextView.setMovementMethod(new ScrollingMovementMethod());
 
-        mParams = new WindowManager.LayoutParams(
+        WindowManager.LayoutParams params = new WindowManager.LayoutParams(
                 WindowManager.LayoutParams.MATCH_PARENT,
                 WindowManager.LayoutParams.MATCH_PARENT,
                 0, 0,
                 WindowManager.LayoutParams.TYPE_TOAST,
-                WindowManager.LayoutParams.FLAG_NOT_FOCUSABLE |
-                        WindowManager.LayoutParams.FLAG_NOT_TOUCH_MODAL,
+                WindowManager.LayoutParams.FLAG_NOT_FOCUSABLE
+                        | WindowManager.LayoutParams.FLAG_NOT_TOUCHABLE,
                 PixelFormat.TRANSLUCENT);
 
-        mParams.gravity = Gravity.CENTER;
-        mParams.setTitle("Window test");
+        params.gravity = Gravity.CENTER;
 
         mWindowManager = (WindowManager) getSystemService(WINDOW_SERVICE);
-        mWindowManager.addView(mWindow, mParams);
+        mWindowManager.addView(mWindow, params);
 
     }
 
     @Override
     public void onDestroy() {
-        super.onDestroy();
         mWindowManager.removeView(mWindow);
+        super.onDestroy();
     }
 
     @Nullable

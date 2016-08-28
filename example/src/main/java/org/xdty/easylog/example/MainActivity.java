@@ -23,12 +23,6 @@ public class MainActivity extends AppCompatActivity {
 
         mTextView = (TextView) findViewById(R.id.text);
 
-        EasyLog.start(this);
-    }
-
-    @Override
-    protected void onResume() {
-        super.onResume();
         // generate log
         new Thread(new Runnable() {
             @Override
@@ -41,17 +35,24 @@ public class MainActivity extends AppCompatActivity {
                 }
             }
         }).start();
+
+        EasyLog.start(this);
+    }
+
+    @Override
+    protected void onResume() {
+        super.onResume();
     }
 
     @Override
     protected void onStop() {
         super.onStop();
-        isStopped = true;
     }
 
     @Override
     protected void onDestroy() {
         super.onDestroy();
+        isStopped = true;
         EasyLog.stop(this);
     }
 }
