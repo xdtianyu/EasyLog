@@ -6,7 +6,7 @@ android:
   - android-24
   - build-tools-24.0.1
   - extra
-jdk: oraclejdk7
+jdk: oraclejdk8
 notifications:
   email: false
 before_install:
